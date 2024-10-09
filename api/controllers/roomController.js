@@ -12,6 +12,11 @@ class RoomController {
 
   static async createRoom(req, res) {
     try {
+      const { error } = createRoomValidation(req.body);
+      if (error) {
+        return { type: false, message: error.details[0].message };
+      }
+
       const result = await RoomService.createRoom(req, res);
       return res.status(result.type ? 201 : 400).json(result);
     } catch (error) {
@@ -21,6 +26,11 @@ class RoomController {
 
   static async updateRoom(req, res) {
     try {
+      const { error } = updateRoomValidation(req.body);
+      if (error) {
+        return { type: false, message: error.details[0].message };
+      }
+
       const result = await RoomService.updateRoom(req, res);
       return res.status(result.type ? 200 : 400).json(result);
     } catch (error) {

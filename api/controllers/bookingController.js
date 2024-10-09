@@ -1,4 +1,5 @@
 import BookingService from "../services/bookingService";
+import { createBookingValidation } from "../validations/bookingValidation";
 
 class BookingController {
   static async getAllBookings(req, res) {
@@ -22,6 +23,11 @@ class BookingController {
 
   static async createBooking(req, res) {
     try {
+      const { error } = createBookingValidation(req.body);
+      if (error) {
+        return res.status(400).json({ type: false, message: error.details[0].message });
+      }
+
       const result = await BookingService.createBooking(req, res);
       return res.status(result.type ? 201 : 400).json(result);
     } catch (error) {
@@ -31,6 +37,10 @@ class BookingController {
 
   static async updateBooking(req, res) {
     try {
+      const { error } = updateBookingValidation(req.body);
+      if (error) {
+        return res.status(400).json({ type: false, message: error.details[0].message });
+      }
       const result = await BookingService.updateBooking(req, res);
       return res.status(result.type ? 200 : 400).json(result);
     } catch (error) {
