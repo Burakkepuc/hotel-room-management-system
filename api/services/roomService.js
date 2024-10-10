@@ -1,7 +1,10 @@
 import Room from '../models/roomModel';
 import mongoose from 'mongoose';
+import redisClient from '../helpers/redis'
 
 class RoomService {
+
+
 
   static async getAllRooms(req, res) {
     try {
@@ -31,7 +34,12 @@ class RoomService {
         return res.status(400).json({ success: false, message: 'End date must be after start date' });
       }
 
-      console.log('Query dates:', start, end);
+      const cacheKey = `rooms_${startDate}_${endDate}`;
+
+      const cachedData = await redisClient.getCache(cacheKey);
+      if (cachedData) {
+        return { type: true, data: cachedData, message: 'Rooms fetched from cache' };
+      }
 
       const availableRooms = await Room.find({
         availableDates: {
@@ -41,6 +49,9 @@ class RoomService {
           }
         }
       });
+
+      await redisClient.setCache(cacheKey, availableRooms); // 'this' ile setCache'i çağır
+
 
       return { type: true, data: availableRooms, message: 'All rooms fetched' }
     } catch (error) {
