@@ -20,18 +20,15 @@ class RoomService {
       const { startDate, endDate } = req.body;
 
       if (!startDate || !endDate) {
-        return res.status(400).json({ success: false, message: 'Both start date and end date are required' });
+        return { success: false, message: 'Both start date and end date are required' };
       }
 
       const start = new Date(startDate);
       const end = new Date(endDate);
 
-      if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-        return res.status(400).json({ success: false, message: 'Invalid date format' });
-      }
 
       if (start >= end) {
-        return res.status(400).json({ success: false, message: 'End date must be after start date' });
+        return { success: false, message: 'End date must be after start date' };
       }
 
       const cacheKey = `rooms_${startDate}_${endDate}`;
