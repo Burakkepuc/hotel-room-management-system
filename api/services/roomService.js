@@ -50,7 +50,7 @@ class RoomService {
         }
       });
 
-      await redisClient.setCache(cacheKey, availableRooms); // 'this' ile setCache'i çağır
+      await redisClient.setCache(cacheKey, availableRooms);
 
 
       return { type: true, data: availableRooms, message: 'All rooms fetched' }

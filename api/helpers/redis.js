@@ -12,16 +12,16 @@ class RedisClient {
 
   async connect() {
     try {
-      await this.client.connect(); // Bağlantıyı kur
-      console.log("Connected to Redis"); // Başarıyla bağlandığında mesajı göster
+      await this.client.connect();
+      console.log("Connected to Redis");
     } catch (error) {
       console.error('Failed to connect to Redis:', error);
     }
   }
 
-  async getCache(key) {  // Örnek metot
+  async getCache(key) {
     try {
-      const data = await this.client.get(key); // 'this.client' ile erişim
+      const data = await this.client.get(key);
       if (data) {
         console.log(`Cache hit for key: ${key}`);
         return JSON.parse(data);
@@ -35,9 +35,9 @@ class RedisClient {
     }
   }
 
-  async setCache(key, value) {  // Örnek metot
+  async setCache(key, value) {
     try {
-      await this.client.set(key, JSON.stringify(value)); // 'this.client' ile erişim
+      await this.client.set(key, JSON.stringify(value));
       console.log(`Cache set for key: ${key}`);
     } catch (error) {
       console.error('Error setting cache:', error);
