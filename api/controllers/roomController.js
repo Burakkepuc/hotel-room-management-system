@@ -1,4 +1,5 @@
 import RoomService from '../services/roomService';
+import { createRoomValidation, updateRoomValidation } from '../validations/roomValidation';
 
 class RoomController {
   static async getAllRooms(req, res) {
@@ -10,13 +11,23 @@ class RoomController {
     }
   }
 
+  static async getAllAvailableRoomsByDate(req, res) {
+    try {
+      const result = await RoomService.getAllAvailableRoomsByDate(req, res);
+      return res.status(result.type ? 200 : 400).json(result);
+    } catch (error) {
+      return res.status(500).json({ type: false, message: error.message });
+    }
+  }
+
   static async createRoom(req, res) {
     try {
       const { error } = createRoomValidation(req.body);
+      console.log(error);
       if (error) {
-        return { type: false, message: error.details[0].message };
+        return res.status(400).json({ type: false, message: error.details[0].message });
       }
-
+      console.log(1);
       const result = await RoomService.createRoom(req, res);
       return res.status(result.type ? 201 : 400).json(result);
     } catch (error) {
@@ -28,7 +39,7 @@ class RoomController {
     try {
       const { error } = updateRoomValidation(req.body);
       if (error) {
-        return { type: false, message: error.details[0].message };
+        return res.status(400).json({ type: false, message: error.details[0].message });
       }
 
       const result = await RoomService.updateRoom(req, res);

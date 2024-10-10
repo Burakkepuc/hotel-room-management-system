@@ -53,9 +53,9 @@ class BookingService {
   static async updateBooking(req, res) {
     try {
       const { id } = req.params;
-      const { user, room, startDate, endDate } = req.body;
+      const { userId, roomId, startDate, endDate } = req.body;
 
-      const updatedBooking = await Booking.findByIdAndUpdate(id, { user, room, startDate, endDate }, { new: true });
+      const updatedBooking = await Booking.findByIdAndUpdate(id, { user: userId, room: roomId, startDate, endDate }, { new: true });
 
       if (!updatedBooking) {
         return res.status(404).json({ type: false, message: 'Booking not found' });

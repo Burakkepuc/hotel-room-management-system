@@ -12,11 +12,49 @@ class RoomService {
     }
   }
 
+  static async getAllAvailableRoomsByDate(req, res) {
+    try {
+      const { startDate, endDate } = req.body;
+
+      if (!startDate || !endDate) {
+        return res.status(400).json({ success: false, message: 'Both start date and end date are required' });
+      }
+
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+
+      if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+        return res.status(400).json({ success: false, message: 'Invalid date format' });
+      }
+
+      if (start >= end) {
+        return res.status(400).json({ success: false, message: 'End date must be after start date' });
+      }
+
+      console.log('Query dates:', start, end);
+
+      const availableRooms = await Room.find({
+        availableDates: {
+          $elemMatch: {
+            start: { $gte: start },
+            end: { $lte: end }
+          }
+        }
+      });
+
+      return { type: true, data: availableRooms, message: 'All rooms fetched' }
+    } catch (error) {
+      console.log(error);
+      return { type: false, message: 'An error occurred getting all rooms' };
+    }
+  }
+
+
   static async createRoom(req, res) {
     try {
-      const { number, type, price, quantity, isAvailable } = req.body;
+      const { number, type, price, quantity, isAvailable, availableDates } = req.body;
 
-      const room = await Room.create({ number, type, price, quantity, isAvailable })
+      const room = await Room.create({ number, type: type.toLowerCase(), price, quantity, isAvailable, availableDates })
 
       return { type: true, data: room, message: 'Room created successfully' }
     } catch (error) {
@@ -33,7 +71,7 @@ class RoomService {
   static async updateRoom(req, res) {
     try {
       const { id } = req.params;
-      const { number, type, price, quantity, isAvailable } = req.body;
+      const { number, type, price, quantity, isAvailable, availableDates } = req.body;
 
       if (!id) {
         return { type: false, message: 'Room id required ' };
@@ -41,7 +79,7 @@ class RoomService {
 
       const updatedRoom = await Room.updateOne(
         { _id: id },
-        { number, type, price, quantity, isAvailable },
+        { number, type: type.toLowerCase(), price, quantity, isAvailable, availableDates },
         { new: true, runValidators: true }
       );
 
@@ -79,7 +117,7 @@ class RoomService {
         return { type: false, message: 'Room type is required' };
       }
 
-      const rooms = await Room.find({ type, isAvailable: true });
+      const rooms = await Room.find({ type: type.toLowerCase(), isAvailable: true });
 
       return { type: true, data: rooms, message: `Rooms of type ${type} fetched successfully` };
     } catch (error) {

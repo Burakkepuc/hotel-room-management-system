@@ -15,9 +15,7 @@ fs.readdir(__dirname, (err, files) => {
       if (routeName === "auth") {
         app.use(`/${routeName}`, routeFile);
       } else {
-        // app.use(`/${routeName}`, Token.verifyToken, routeFile);
-        app.use(`/${routeName}`, routeFile);
-
+        app.use(`/${routeName}`, Token.verifyToken, routeFile);
       }
     });
   }

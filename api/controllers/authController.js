@@ -1,5 +1,5 @@
 import AuthService from "../services/authService";
-import { registerValidation } from "../validations/authValidation";
+import { loginValidation, registerValidation } from "../validations/authValidation";
 
 class AuthController {
 
