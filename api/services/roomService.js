@@ -55,7 +55,6 @@ class RoomService {
 
       return { type: true, data: availableRooms, message: 'All rooms fetched' }
     } catch (error) {
-      console.log(error);
       return { type: false, message: 'An error occurred getting all rooms' };
     }
   }

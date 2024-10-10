@@ -42,7 +42,6 @@ class BookingController {
         return res.status(400).json({ type: false, message: error.details[0].message });
       }
       const result = await BookingService.updateBooking(req, res);
-      console.log(result);
       return res.status(result.type ? 200 : 400).json(result);
     } catch (error) {
       return res.status(500).json({ type: false, message: error.message });

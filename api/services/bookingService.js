@@ -58,12 +58,12 @@ class BookingService {
       const updatedBooking = await Booking.findByIdAndUpdate(id, { user: userId, room: roomId, startDate, endDate }, { new: true });
 
       if (!updatedBooking) {
-        return res.status(404).json({ type: false, message: 'Booking not found' });
+        return { type: false, message: 'Booking not found' };
       }
+
       return { type: true, data: updatedBooking, message: 'Booking updated successfully' }
 
     } catch (error) {
-      console.log(error);
       return { type: false, message: 'An error occurred update a booking', error: error.message };
 
     }

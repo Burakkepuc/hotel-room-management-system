@@ -23,11 +23,9 @@ class RoomController {
   static async createRoom(req, res) {
     try {
       const { error } = createRoomValidation(req.body);
-      console.log(error);
       if (error) {
         return res.status(400).json({ type: false, message: error.details[0].message });
       }
-      console.log(1);
       const result = await RoomService.createRoom(req, res);
       return res.status(result.type ? 201 : 400).json(result);
     } catch (error) {
